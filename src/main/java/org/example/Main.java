@@ -7,12 +7,21 @@ public class Main {
         System.out.println("Hello, World!");
 
         String passwort;
+        String antwort;
         Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Wollen Sie einen random passwort haben? (y/n): ");
+        antwort = scanner.nextLine();
+        if (antwort.equalsIgnoreCase("y")) {
+            passwort = PasswordGenerator.generatePassword();
+            System.out.println("Das zufällige Passort ist: " + passwort);
+            return;
+        }
 
         do{
             System.out.print("Bitte geben Sie einen Passwort ein: ");
             passwort = scanner.nextLine();
-            if(passwort.length() < 8){    // mindestens 8 Zeichen lang
+            if(!atLeast8Chars(passwort)){    // mindestens 8 Zeichen lang
                 System.out.println("Das Passwort sollte mindesten 8 Zeichen lang.");
             }else if(!hasZiffer(passwort)){   // Ziffer enthält
                 System.out.println("Das Passwort sollte Ziffer haben");
@@ -24,13 +33,14 @@ public class Main {
             else if(zuEinfach(passwort)){     // keine häufig verwendete Passwörter
                 System.out.println("Das Passwort is zu schwach.");
             }else{
-                System.out.println("Ihr Passwort erfüllt die Anforderungen.");
+                System.out.println("Ihr Passwort erfüllt alle Anforderungen.");
                 return;
             }
         }while(true);
+    }
 
-
-
+    public static boolean atLeast8Chars(String passwort){
+        return passwort.length() >= 8;
     }
     public static boolean hasZiffer(String passwort){
         //String[] buchstaben = passwort.split(" ");
@@ -48,16 +58,17 @@ public class Main {
     }
     public static boolean zuEinfach(String passwort){
 
-        if(passwort.matches("Passwor[td](\\d)\\1*") || passwort.matches("(\\d)\\1*Passwor[td]")
+        return passwort.matches("Passwor[td](\\d)\\1*") || passwort.matches("(\\d)\\1*Passwor[td]")
                 || passwort.matches("(0)?12(3(4(5(6(7(8(9)?)?)?)?)?)?)?Passwor[td]")
                 || passwort.matches("Passwor[td](0)?12(3(4(5(6(7(8(9)?)?)?)?)?)?)?")
-                ||passwort.matches("Aa((0)?12345(6(7(8(9)?)?)?)?)?")
-                ||passwort.matches("Aa(\\d)\\1{5,}")){
-            return true;
-        }
-        return false;
+                || passwort.matches("Aa((0)?12345(6(7(8(9)?)?)?)?)?")
+                || passwort.matches("Aa(\\d)\\1{5,}");
     }
     public static boolean hatSonderzeichen(String passwort){
         return passwort.matches(".*[^a-zA-Z0-9].*");
+    }
+    public static boolean isSafe(String passwort){
+        return atLeast8Chars(passwort) && hasZiffer(passwort) && hasBuchstabe(passwort)
+                && hatSonderzeichen(passwort);
     }
 }
